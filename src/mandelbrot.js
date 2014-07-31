@@ -26,10 +26,10 @@ show = (function() {
 
         var result = [];
 
-        //testen ob der pixel zur mandelbrot menge gehört
+        //check if pixel is in mandelbrot set
         var isElement = function(a, b) {
             var x = 0, x2, y = 0;
-            for (var n = 0; n < 30; n++) {//INTERATIONEN, genauigkeit des bildes
+            for (var n = 0; n < 30; n++) {//iterations, accuracy of the image
                 x2 = x * x - y * y + a;
                 y = 2 * x * y + b;
                 x = x2;
@@ -41,8 +41,8 @@ show = (function() {
         };
         var update = function() {
             var a, b;
+            //TODO: split the loops for multiple worker
             //iterrate over every pixel in image
-            //TODO: use rulus worker here =)
             for (var i = 0; i < h; i = i + 1 / zoomfactor) {
                 b = i * 3.0 / h - 1.5;
                 for (var j = 0; j < w; j = j + 1 / zoomfactor) {
@@ -77,8 +77,6 @@ show = (function() {
         ctx.clearRect(0, 0, w, h);
     };
 
-    //setInterval(update, 1000);
-
     //command center :D
     //renders a zoomed part
     //x pos, y pos, width from x, height from y
@@ -88,6 +86,7 @@ show = (function() {
 
         var zoomfactor = w / width;
 
+        //TODO: start multiple worker and split the for loops
         //create and start worker to calc the data
         r.create("rulus.worker").push(function(res) {
             clearCanvas();
@@ -96,4 +95,11 @@ show = (function() {
     };
 
 })();
+
+//TODO: create overlaying div with settings
+//TODO: draw rectangle on click and start show on these rectangle
+//TODO: auto iterations settings?
+//TODO: optimization
+
+//render picture with x=0,y=0 and width/height=800
 show(0, 0, 800, 800);
