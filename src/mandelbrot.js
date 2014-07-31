@@ -66,7 +66,7 @@ show = (function() {
         for (var i = 0; i < data.length; i++) {
             if (data[i]) {
                 var x = i % w;
-                var y = parseInt(i / h);
+                var y = (i / h) | 0;
                 x = x * zoomfactor;
                 y = y * zoomfactor;
                 ctx.fillRect(x - xoffset, y - yoffset, 1, 1);
@@ -87,7 +87,7 @@ show = (function() {
         var yoffset = y;
 
         var zoomfactor = w / width;
-        
+
         //create and start worker to calc the data
         r.create("rulus.worker").push(function(res) {
             clearCanvas();
