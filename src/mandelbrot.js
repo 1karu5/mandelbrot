@@ -1,7 +1,9 @@
-show = (function() {
+show = (function(){
     var w = 800;
     var h = 800;
-
+    
+	var worker = r.create("rulus.worker");
+	
     var canvas = document.createElement("canvas");
     canvas.setAttribute("id", "canvas");
     canvas.setAttribute("style", "position:fixed;top:0px;left:0px;");
@@ -9,25 +11,26 @@ show = (function() {
     canvas.height = h;
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgba(255,0,0,255)";
-
+    
     var body;
-    var rdy = function() {
+    var rdy = function(){
         body = document.getElementsByTagName("body")[0];
         if (body == undefined) {
             setTimeout(rdy, 10);
-        } else {
+        }
+        else {
             body.appendChild(canvas);
         }
     };
     rdy();
-
-    var workerFunction = function(data) {
+    
+    var workerFunction = function(data){
         var w = data[0], h = data[1], xoffset = data[2], yoffset = data[3], zoomfactor = data[4];
-
+        
         var result = [];
-
+        
         //check if pixel is in mandelbrot set
-        var isElement = function(a, b) {
+        var isElement = function(a, b){
             var x = 0, x2, y = 0;
             for (var n = 0; n < 30; n++) {//iterations, accuracy of the image
                 x2 = x * x - y * y + a;
@@ -39,7 +42,7 @@ show = (function() {
             }
             return true;
         };
-        var update = function() {
+        var update = function(){
             var a, b;
             //TODO: split the loops for multiple worker
             //iterrate over every pixel in image
@@ -53,16 +56,18 @@ show = (function() {
                 }
             }
         };
-        var setInResult = function(x, y) {
-            result[(x % w) + (y * h)] = true;
+        var setInResult = function(x, y){
+            x = x | 0;
+            y = y | 0;
+            result[x + (y * w)] = true;
         };
-
+        
         update();
-
+        
         return result;
     };
-
-    var paint = function(data, zoomfactor, xoffset, yoffset) {
+    
+    var paint = function(data, zoomfactor, xoffset, yoffset){
         for (var i = 0; i < data.length; i++) {
             if (data[i]) {
                 var x = i % w;
@@ -73,27 +78,27 @@ show = (function() {
             }
         }
     };
-    var clearCanvas = function() {
+    var clearCanvas = function(){
         ctx.clearRect(0, 0, w, h);
     };
-
+    
     //command center :D
     //renders a zoomed part
     //x pos, y pos, width from x, height from y
-    return function(x, y, width, height) {
+    return function(x, y, width, height){
         var xoffset = x;
         var yoffset = y;
-
+        
         var zoomfactor = w / width;
-
+        
         //TODO: start multiple worker and split the for loops
         //create and start worker to calc the data
-        r.create("rulus.worker").push(function(res) {
+        worker.push(function(res){
             clearCanvas();
             paint(res, zoomfactor, xoffset, yoffset);
         }, workerFunction, [w, h, xoffset, yoffset, zoomfactor]);
     };
-
+    
 })();
 
 //TODO: create overlaying div with settings
