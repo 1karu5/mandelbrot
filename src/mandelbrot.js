@@ -2,15 +2,49 @@ show = (function(){
     var w = 800;
     var h = 800;
     
-	var worker = r.create("rulus.worker");
-	
-    var canvas = document.createElement("canvas");
-    canvas.setAttribute("id", "canvas");
-    canvas.setAttribute("style", "position:fixed;top:0px;left:0px;");
-    canvas.width = w;
-    canvas.height = h;
-    var ctx = canvas.getContext("2d");
-    ctx.fillStyle = "rgba(255,0,0,255)";
+    var worker = r.create("rulus.worker");
+    
+    var mandelCanvas = document.createElement("canvas");
+    mandelCanvas.setAttribute("style", "position:absolute;top:0px;left:0px;");
+    mandelCanvas.width = w;
+    mandelCanvas.height = h;
+    var mandelCTX = mandelCanvas.getContext("2d");
+    mandelCTX.fillStyle = "rgba(0,0,255,255)";
+    
+    var controlCanvas = document.createElement("canvas");
+    controlCanvas.setAttribute("style", "position:absolute;top:0px;left:0px;background-color:transparent;");
+    controlCanvas.width = w;
+    controlCanvas.height = h;
+    var controlCTX = controlCanvas.getContext("2d");
+    controlCTX.fillStyle = "rgba(255,0,0,255)";
+    
+	//mouse controls
+    (function(){
+        var pressed = false;
+        var xstart, ystart;
+        var xend, yend;
+        controlCanvas.addEventListener("mousedown", function(e){
+            controlCTX.clearRect(0, 0, w, h);
+            pressed = true;
+            xstart = e.clientX;
+            ystart = e.clientY;
+			console.log(xstart,ystart);
+        });
+        controlCanvas.addEventListener("mousemove", function(e){
+            if (pressed) {
+                controlCTX.clearRect(0, 0, w, h);
+                controlCTX.lineWidth = 1;
+                xend = e.clientX - xstart;
+                yend = e.clientY - ystart;
+                controlCTX.strokeRect(xstart, ystart, xend, yend);
+            }
+        });
+        controlCanvas.addEventListener("mouseup", function(e){
+            pressed = false;
+            controlCTX.clearRect(0, 0, w, h);
+            show(xstart, ystart, xend, yend);
+        });
+    })()
     
     var body;
     var rdy = function(){
@@ -19,7 +53,8 @@ show = (function(){
             setTimeout(rdy, 10);
         }
         else {
-            body.appendChild(canvas);
+            body.appendChild(mandelCanvas);
+            body.appendChild(controlCanvas);
         }
     };
     rdy();
@@ -74,18 +109,19 @@ show = (function(){
                 var y = (i / h) | 0;
                 x = x * zoomfactor;
                 y = y * zoomfactor;
-                ctx.fillRect(x - xoffset, y - yoffset, 1, 1);
+                mandelCTX.fillRect(x - xoffset, y - yoffset, 1, 1);
             }
         }
     };
     var clearCanvas = function(){
-        ctx.clearRect(0, 0, w, h);
+        mandelCTX.clearRect(0, 0, w, h);
     };
     
     //command center :D
     //renders a zoomed part
     //x pos, y pos, width from x, height from y
-    return function(x, y, width, height){
+    var show = function(x, y, width, height){
+		console.log(arguments);
         var xoffset = x;
         var yoffset = y;
         
@@ -98,6 +134,7 @@ show = (function(){
             paint(res, zoomfactor, xoffset, yoffset);
         }, workerFunction, [w, h, xoffset, yoffset, zoomfactor]);
     };
+    return show;
     
 })();
 
