@@ -1,10 +1,20 @@
 <html>
-<head>
-<script type="text/javascript" src="vendor/rulus/rulus.class.js"></script>
-<script type="text/javascript" src="vendor/rulus/rulus.worker.js"></script>
-<script type="text/javascript" src="mandelbrot.js"></script>
-</head>
-<body>
-
-</body>
+    <head>
+        <script type="text/javascript" src="vendor/rulus/src/rulus/rulus.js">
+        </script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            r.ready(function(){
+                r.require.routing(/.+/, function(url){
+                    return "vendor/rulus/src/" + url;
+                });
+				
+                r.require(["rulus/class/rulus.class.autoload", "rulus/rulus.worker", "rulus/rulus.load"], function(){
+					
+                    r.load.js("mandelbrot.js");
+                });
+            });
+        </script>
+    </body>
 </html>

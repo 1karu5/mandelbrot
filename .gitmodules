@@ -1,0 +1,3 @@
+[submodule "src/vendor/rulus"]
+	path = src/vendor/rulus
+	url = git://github.com/rulus/rulus.git
