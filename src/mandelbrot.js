@@ -18,7 +18,7 @@ show = (function(){
     var controlCTX = controlCanvas.getContext("2d");
     controlCTX.fillStyle = "rgba(255,0,0,255)";
     
-	//mouse controls
+    //mouse controls
     (function(){
         var pressed = false;
         var xstart, ystart;
@@ -26,22 +26,23 @@ show = (function(){
         controlCanvas.addEventListener("mousedown", function(e){
             controlCTX.clearRect(0, 0, w, h);
             pressed = true;
-            xstart = e.clientX;
-            ystart = e.clientY;
-			console.log(xstart,ystart);
+            xstart = e.pageX;
+            ystart = e.pageY;
+            console.log(xstart, ystart);
         });
         controlCanvas.addEventListener("mousemove", function(e){
             if (pressed) {
                 controlCTX.clearRect(0, 0, w, h);
                 controlCTX.lineWidth = 1;
-                xend = e.clientX - xstart;
-                yend = e.clientY - ystart;
+                xend = e.pageX - xstart;
+                yend = e.pageY - ystart;
                 controlCTX.strokeRect(xstart, ystart, xend, yend);
             }
         });
         controlCanvas.addEventListener("mouseup", function(e){
             pressed = false;
             controlCTX.clearRect(0, 0, w, h);
+            console.log(xstart, ystart, xend, yend);
             show(xstart, ystart, xend, yend);
         });
     })()
@@ -121,7 +122,7 @@ show = (function(){
     //renders a zoomed part
     //x pos, y pos, width from x, height from y
     var show = function(x, y, width, height){
-		console.log(arguments);
+        console.log(arguments);
         var xoffset = x;
         var yoffset = y;
         
