@@ -38,6 +38,7 @@ r.define("canvas.control", {
             this.clear();
             console.log(xstart, ystart, xend, yend);
             //TODO: trigger show here
+            this.triggerUp("calcMandelBrot", [xstart, ystart, xend, yend]);
             //show(xstart, ystart, xend, yend);
         });
         
