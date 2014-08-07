@@ -26,15 +26,18 @@ r.define("mandelbrot", {
 			}
 		});
 
-		body.append(mandelCanvas, controlCanvas);
-		
+		var info = r.create({
+			type : "info"
+		});
+
+		body.append(mandelCanvas, controlCanvas, info);
+
 		var mandelCTX = mandelCanvas.getContext2d();
 		mandelCTX.fillStyle = "rgba(0,0,255,255)";
 
 		var controlCTX = controlCanvas.getContext2d();
 		controlCTX.fillStyle = "rgba(255,0,0,255)";
-		
-		
+
 		//mouse controls for HUD
 		(function() {
 			var pressed = false;
