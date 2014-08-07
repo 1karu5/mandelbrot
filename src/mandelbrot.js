@@ -14,11 +14,15 @@ r.define("mandelbrot", {
             height: h
         });
         
+        var info = r.create({
+            type: "info"
+        });
+        
         body.append(mandelCanvas, {
             type: "canvas.control",
             width: w,
             height: h
-        });
+        }, info);
         
         var mandelCTX = mandelCanvas.getContext2d();
         mandelCTX.fillStyle = "rgba(0,0,255,255)";
@@ -55,4 +59,3 @@ r.define("mandelbrot", {
         });
     }
 });
-
