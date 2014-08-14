@@ -3,9 +3,9 @@ r.require.routing(/rulus[.]*/, function(url){
     return "vendor/rulus/src/" + url;
 });
 
-r.ready(function(){//page ready
-    r.require(["rulus/class/rulus.class.autoload", "rulus/rulus.debug", "rulus/rulus.ui"], function(){//need rulus class for objs
+r.require(["rulus/class/rulus.class.autoload", "rulus/rulus.helper", "rulus/rulus.domReady", "rulus/rulus.log", "rulus/rulus.class", "rulus/class/rulus.class.autoload", "rulus/rulus.debug", "rulus/rulus.ui"], function(){//need rulus class for objs
+    r.ready(function(){//page ready
         //create first obj =)
-        r.find(true, "body")[0].append(r.create("mandelbrot"));
+        r.find("body")[0].append(r.create("mandelbrot"));
     });
 });
